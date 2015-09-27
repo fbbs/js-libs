@@ -12,7 +12,7 @@
         module.exports = factory();
     } else {
         // Browser globals (root is window)
-        root.store = factory();
+        root.Store = factory();
   }
 }(this, function () {
 	
