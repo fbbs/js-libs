@@ -7,12 +7,9 @@ find_program(UGLIFYJS uglifyjs)
 set(DOCUMENT_ROOT "/var/www/localhost/htdocs/fbbs")
 
 function(publish_js MINIFIED SCRIPTS)
-	set(OUTPUT)
+	set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${MINIFIED}.min.js)
 	if(UGLIFYJS)
-		set(FULL_PATHS)
-
-		set(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${MINIFIED}.min.js
-				${CMAKE_CURRENT_BINARY_DIR}/${MINIFIED}.map.js)
+		set(OUTPUT ${OUTPUT} ${CMAKE_CURRENT_BINARY_DIR}/${MINIFIED}.map.js)
 		add_custom_command(OUTPUT ${OUTPUT}
 				COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR}
 						&& cp ${SCRIPTS} ${CMAKE_CURRENT_BINARY_DIR}
@@ -20,8 +17,8 @@ function(publish_js MINIFIED SCRIPTS)
 						--source-map ${MINIFIED}.map.js -p relative
 				DEPENDS ${SCRIPTS})
 	else(UGLIFYJS)
-		add_custom_command(OUTPUT ${MINIFIED}.min.js
-				COMMAND cat ${FULL_PATHS} > ${MINIFIED}.min.js
+		add_custom_command(OUTPUT ${OUTPUT}
+				COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} && cat ${SCRIPTS} > ${OUTPUT}
 				DEPENDS ${SCRIPTS})
 	endif(UGLIFYJS)
 	add_custom_target(${MINIFIED} ALL DEPENDS ${OUTPUT})
